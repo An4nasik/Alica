@@ -50,7 +50,9 @@ def handle_dialog(res, req):
         return
         # создаем словарь в который в будущем положим имя пользователя
     else:
-        if "да" in req['request']['nlu']['tokens'] or "продолжаем" in req['request']['nlu']['tokens']:
+        if "Редактировать слова" in "да" in req['request']['nlu']['tokens']:
+          pass
+        elif "да" in req['request']['nlu']['tokens'] or "продолжаем" in req['request']['nlu']['tokens']:
             f = open("rewords.txt")
             words = [" ".join(x.split(sep=",")) for x in f]
             ans = random.choices(words, k=5)
@@ -87,7 +89,13 @@ def handle_dialog(res, req):
                 {
                     "title": "".join(ans[4].split()[1]),
                     "hide": True
-                }
+                },
+                {
+                  "title": "Редактировать слова",
+                  "url": "https://alpine-pie-berry.glitch.me/edit",
+                  "hide": True
+
+              }
             ]
             sessionStorage["suggests"] = [{
                 "title": "Продолжаем",
@@ -116,7 +124,13 @@ def handle_dialog(res, req):
                 {
                     "title": "".join(ans[4].split()[1]),
                     "hide": True
-                }
+                },
+                {
+                  "title": "Редактировать слова",
+                  "url": "https://alpine-pie-berry.glitch.me/edit",
+                  "hide": True
+
+              }
             ]
             f.close()
             return
@@ -137,7 +151,10 @@ def handle_dialog(res, req):
                 res["response"]["buttons"] = sessionStorage["suggests"]
                 return
             else:
-                res['response']['text'] = "Не поняла, попробуйте еще раз"
+                if "редактировать слова" not in " ".join(req['request']['nlu']['tokens']):
+                    res['response']['text'] = "Не поняла, попробуйте еще раз"
+                    res["response"]["buttons"] = sessionStorage["suggests"]
+                res['response']['text'] = "Сейчас сделаем"
                 res["response"]["buttons"] = sessionStorage["suggests"]
                 return
 
